@@ -10,7 +10,7 @@ http.createServer(async (req, res) => {
 
         case "/random":
             sseStart(res);
-            sseRandom(res);
+            sendMeasurement(res);
             break;
     }
 }).listen(port);
@@ -42,8 +42,26 @@ async function sseRandom(res) {
     setTimeout(() => sseRandom(res), 5);
 }
 
+async function sendMeasurement(res) {
+
+    VL53L0X(...args).then(async (vl53l0x) => {
+        while(true) {
+        let x = await vl53l0x.measure();
+        console.log(x);
+        res.write("data: " + x + "\n\n");
+        }
+    })
+    .catch(console.error)
+    
+}
+
 function sleep(ms) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     })
 }
+
+const VL53L0X = require('../')
+// const args = ['/dev/tty.usbserial-DO01INSW', 0x29, 'i2cdriver/i2c-bus']
+const args = [1, 0x29]
+
