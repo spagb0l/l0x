@@ -21,6 +21,9 @@ let internalTime = getTime();
 let windowManager;
 let initialized = false;
 
+var eventSrc;
+let cubeSize = 1;
+
 // get time in seconds since beginning of the day (so that all windows use the same time)
 function getTime ()
 {
@@ -46,6 +49,7 @@ else
 	window.onload = () => {
 		if (document.visibilityState != 'hidden')
 		{
+			
 			init();
 		}
 	};
@@ -53,16 +57,25 @@ else
 	function init ()
 	{
 		initialized = true;
+		eventSrc = new EventSource('http://localhost:8001/random');
 
 		// add a short timeout because window.offsetX reports wrong values before a short period 
-		setTimeout(() => {
+		setTimeout(async () => {
 			setupScene();
-			setupWindowManager();
+			await setupWindowManager();
 			resize();
 			updateWindowShape(false);
-			render();
+			await render();
 			window.addEventListener('resize', resize);
+			eventSrc.addEventListener('message', async (event) => {
+				console.log(event.data);
+				cubeSize = Number(event.data);
+
+				await render();
+			});
+			
 		}, 500)	
+
 	}
 
 	function setupScene ()
@@ -87,7 +100,7 @@ else
 		document.body.appendChild( renderer.domElement );
 	}
 
-	function setupWindowManager ()
+	async function setupWindowManager ()
 	{
 		windowManager = new WindowManager();
 		windowManager.setWinShapeChangeCallback(updateWindowShape);
@@ -145,11 +158,11 @@ else
 	}
 
 
-	function render ()
+	async function render ()
 	{
 		let t = getTime();
 
-		windowManager.update();
+		await windowManager.update();
 
 
 		// calculate the new position based on the delta between current offset and new offset times a falloff value (to create the nice smoothing effect)
@@ -175,12 +188,17 @@ else
 
 			cube.position.x = cube.position.x + (posTarget.x - cube.position.x) * falloff;
 			cube.position.y = cube.position.y + (posTarget.y - cube.position.y) * falloff;
-			cube.rotation.x = _t * .5;
-			cube.rotation.y = _t * .3;
+			
+			cube.scale.set(cubeSize, cubeSize, cubeSize);
+
+			console.log("cube scaled");
+
+			cube.rotation.x = _t * .25;
+			cube.rotation.y = _t * .15;
 		};
 
 		renderer.render(scene, camera);
-		requestAnimationFrame(render);
+		requestAnimationFrame(await render);
 	}
 
 

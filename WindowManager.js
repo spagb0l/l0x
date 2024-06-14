@@ -16,6 +16,7 @@ class WindowManager
 		{
 			if (event.key == "windows")
 			{
+				/*
 				let newWindows = JSON.parse(event.newValue);
 				let winChange = that.#didWindowsChange(that.#windows, newWindows);
 
@@ -24,7 +25,8 @@ class WindowManager
 				if (winChange)
 				{
 					if (that.#winChangeCallback) that.#winChangeCallback();
-				}
+				}*/
+
 			}
 		});
 
@@ -98,7 +100,7 @@ class WindowManager
 		localStorage.setItem("windows", JSON.stringify(this.#windows));
 	}
 
-	update ()
+	async update ()
 	{
 		//console.log(step);
 		let winShape = this.getWinShape();
@@ -116,7 +118,7 @@ class WindowManager
 			let index = this.getWindowIndexFromId(this.#id);
 			this.#windows[index].shape = winShape;
 
-			//console.log(windows);
+			console.log(windows);
 			if (this.#winShapeChangeCallback) this.#winShapeChangeCallback();
 			this.updateWindowsLocalStorage();
 		}
