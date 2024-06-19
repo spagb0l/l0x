@@ -68,12 +68,13 @@ else
 			await render();
 			window.addEventListener('resize', resize);
 			eventSrc.addEventListener('message', async (event) => {
-				console.log(event.data);
-				cubeSize = Number(event.data);
+				if(Number(event.data) !== cubeSize) {
+					console.log(event.data);
+					cubeSize = Number(event.data);
 
-				await render();
-			});
-			
+					await render();
+				}	
+			});			
 		}, 500)	
 
 	}
@@ -90,7 +91,7 @@ else
 		scene.background = new t.Color(0.0);
 		scene.add( camera );
 
-		renderer = new t.WebGLRenderer({antialias: true, depthBuffer: true});
+		renderer = new t.WebGLRenderer({antialias: false, depthBuffer: false});
 		renderer.setPixelRatio(pixR);
 	    
 	  	world = new t.Object3D();
@@ -198,7 +199,7 @@ else
 		};
 
 		renderer.render(scene, camera);
-		requestAnimationFrame(await render);
+		requestAnimationFrame(render);
 	}
 
 

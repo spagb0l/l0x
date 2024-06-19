@@ -10,7 +10,7 @@ http.createServer(async (req, res) => {
 
         case "/random":
             sseStart(res);
-            sendMeasurement(res);
+            sseRandom(res);
             break;
     }
 }).listen(port);
@@ -61,7 +61,7 @@ function sleep(ms) {
     })
 }
 
-const VL53L0X = require('../')
+//const VL53L0X = require('../')
 // const args = ['/dev/tty.usbserial-DO01INSW', 0x29, 'i2cdriver/i2c-bus']
 const args = [1, 0x29]
 
