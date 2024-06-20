@@ -1,4 +1,7 @@
 {
-    "main":"node_server.js",
-    "type":"module"
+    "main": "node_server.js",
+    "type": "module",
+    "dependencies": {
+        "stats.js": "^0.17.0"
+    }
 }

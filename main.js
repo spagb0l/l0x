@@ -1,5 +1,5 @@
 import WindowManager from './WindowManager.js'
-
+import Stats from './stats.module.js';
 
 
 const t = THREE;
@@ -23,6 +23,9 @@ let initialized = false;
 
 var eventSrc;
 let cubeSize = 1;
+
+var stats = new Stats();
+stats.showPanel(0);
 
 // get time in seconds since beginning of the day (so that all windows use the same time)
 function getTime ()
@@ -65,6 +68,7 @@ else
 			await setupWindowManager();
 			resize();
 			updateWindowShape(false);
+			document.body.appendChild(stats.dom);
 			await render();
 			window.addEventListener('resize', resize);
 			eventSrc.addEventListener('message', async (event) => {
@@ -161,6 +165,8 @@ else
 
 	async function render ()
 	{
+		stats.begin();
+
 		let t = getTime();
 
 		await windowManager.update();
@@ -199,6 +205,7 @@ else
 		};
 
 		renderer.render(scene, camera);
+		stats.end();
 		requestAnimationFrame(render);
 	}
 
